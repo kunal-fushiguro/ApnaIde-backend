@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { ApiResponse } from "../helper/apiResponse"
+import { ApiResponse } from "../utils/apiResponse"
 
 function test(_: Request, response: Response) {
     const responseObj = new ApiResponse(200, true, "test api endpoint")

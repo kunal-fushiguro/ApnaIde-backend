@@ -13,5 +13,9 @@ class ApiResponse {
     }
 }
 
-export { ApiResponse }
+interface CustomError extends Error {
+    message: string
+}
+
+export { ApiResponse, CustomError }
 
