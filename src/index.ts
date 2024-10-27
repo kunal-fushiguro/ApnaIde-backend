@@ -1,2 +1,4 @@
-console.log("hello-world-changes")
+import { logger } from "./logger"
+
+logger.info("hello")
 
