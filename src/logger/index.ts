@@ -1,6 +1,24 @@
-import loggers from "pino"
+import { createLogger, format, transports } from "winston"
 
-const logger = loggers()
+const { combine, timestamp, json, colorize } = format
+
+const consoleLogFormat = format.combine(
+    format.colorize(),
+    format.printf(({ level, message, timestamp }) => {
+        return `${level}: ${timestamp} : ${message} `
+    })
+)
+
+const logger = createLogger({
+    level: "info",
+    format: combine(colorize(), timestamp(), json()),
+    transports: [
+        new transports.Console({
+            format: consoleLogFormat
+        }),
+        new transports.File({ filename: "app.log" })
+    ]
+})
 
 export { logger }
 
