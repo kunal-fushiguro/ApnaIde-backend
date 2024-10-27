@@ -12,7 +12,7 @@ declare module "express-serve-static-core" {
 
 async function authMiddleware(req: Request, res: Response, next: NextFunction) {
     try {
-        const token = req.cookies.user
+        const token: string = req.cookies?.user
 
         if (!token) {
             res.cookie("user", "", {

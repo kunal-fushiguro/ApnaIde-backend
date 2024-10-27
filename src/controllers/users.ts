@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken"
 import { logger } from "../logger"
 import { JWT_SECRET_TOKEN } from "../utils/env"
 
-async function checkAuth(req: Request, res: Response) {
+async function checkAuth(req: Request, res: Response): Promise<void> {
     try {
         const isUserExisted = await Users.findById(req.userId)
         if (!isUserExisted) {
@@ -25,7 +25,7 @@ async function checkAuth(req: Request, res: Response) {
 
         res.status(200).json(responseobj)
         return
-    } catch (error: unknown) {
+    } catch (error) {
         if (error instanceof Error) {
             logger.error("Error:", error.message)
             const responseObj = new ApiResponse(500, false, `Error: ${error.message}`, { error })
@@ -37,7 +37,7 @@ async function checkAuth(req: Request, res: Response) {
         }
     }
 }
-async function register(req: Request, res: Response) {
+async function register(req: Request, res: Response): Promise<void> {
     try {
         const { name, email, password } = req.body
         if (!name || !email || !password) {
@@ -63,7 +63,7 @@ async function register(req: Request, res: Response) {
 
         const responseobj = new ApiResponse(201, true, "User email register.")
         res.status(201).json(responseobj)
-    } catch (error: unknown) {
+    } catch (error) {
         if (error instanceof Error) {
             logger.error("Error:", error.message)
             const responseObj = new ApiResponse(500, false, `Error: ${error.message}`, { error })
@@ -75,7 +75,7 @@ async function register(req: Request, res: Response) {
         }
     }
 }
-async function login(req: Request, res: Response) {
+async function login(req: Request, res: Response): Promise<void> {
     try {
         const { email, password } = req.body
         if (!email || !password) {
@@ -103,7 +103,7 @@ async function login(req: Request, res: Response) {
             name: isUserExisted.name,
             email: isUserExisted.email,
             _id: String(isUserExisted._id),
-            containersList: [...isUserExisted.containersList]
+            containersList: isUserExisted.containersList
         }
 
         const responseobj = new ApiResponse(200, true, "User login.", user)
@@ -117,7 +117,7 @@ async function login(req: Request, res: Response) {
 
         res.status(200).json(responseobj)
         return
-    } catch (error: unknown) {
+    } catch (error) {
         if (error instanceof Error) {
             logger.error("Error:", error.message)
             const responseObj = new ApiResponse(500, false, `Error: ${error.message}`, { error })
@@ -129,7 +129,7 @@ async function login(req: Request, res: Response) {
         }
     }
 }
-async function update(req: Request, res: Response) {
+async function update(req: Request, res: Response): Promise<void> {
     try {
         const { name, password } = req.body
         if (!name || !password) {
@@ -156,7 +156,7 @@ async function update(req: Request, res: Response) {
         const responseObj = new ApiResponse(200, false, `User updated plz login.`)
         res.status(200).json(responseObj)
         return
-    } catch (error: unknown) {
+    } catch (error) {
         if (error instanceof Error) {
             logger.error("Error:", error.message)
             const responseObj = new ApiResponse(500, false, `Error: ${error.message}`, { error })
@@ -168,7 +168,7 @@ async function update(req: Request, res: Response) {
         }
     }
 }
-async function remove(req: Request, res: Response) {
+async function remove(req: Request, res: Response): Promise<void> {
     try {
         const isUserExisted = await Users.findByIdAndDelete(req.userId)
         res.cookie("user", "", {
@@ -187,7 +187,7 @@ async function remove(req: Request, res: Response) {
         const responseObj = new ApiResponse(200, true, `User deleted.`)
         res.status(200).json(responseObj)
         return
-    } catch (error: unknown) {
+    } catch (error) {
         if (error instanceof Error) {
             logger.error("Error:", error.message)
             const responseObj = new ApiResponse(500, false, `Error: ${error.message}`, { error })
@@ -200,7 +200,7 @@ async function remove(req: Request, res: Response) {
     }
 }
 
-function logout(_: Request, res: Response) {
+function logout(_: Request, res: Response): void {
     try {
         res.cookie("user", "", {
             httpOnly: true,
@@ -212,7 +212,7 @@ function logout(_: Request, res: Response) {
         const responseObj = new ApiResponse(200, true, `User logout`)
         res.status(200).json(responseObj)
         return
-    } catch (error: unknown) {
+    } catch (error) {
         if (error instanceof Error) {
             logger.error("Error:", error.message)
             const responseObj = new ApiResponse(500, false, `Error: ${error.message}`, { error })

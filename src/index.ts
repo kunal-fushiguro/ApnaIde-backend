@@ -3,10 +3,13 @@ import express, { Express, Request, Response } from "express"
 import { router } from "./routes/routes"
 import { ApiResponse } from "./utils/apiResponse"
 import { dbConnect } from "./db/db"
+import cookieparser from "cookie-parser"
 
 const app: Express = express()
 const PORT: number = 7070
 
+app.use(express.json())
+app.use(cookieparser())
 app.use("/api/v1", router)
 
 app.use("/*", function (_: Request, response: Response) {
@@ -14,20 +17,16 @@ app.use("/*", function (_: Request, response: Response) {
     response.status(404).json(responseObj)
 })
 
-async function startServer() {
+app.listen(PORT, async function () {
     try {
         await dbConnect()
-        app.listen(PORT, function () {
-            logger.info(`Server Started on PORT : ${PORT}`)
-        })
-    } catch (error: unknown) {
+        logger.info(`Server Started on PORT : ${PORT}`)
+    } catch (error) {
         if (error instanceof Error) {
             logger.error("Error:", error.message)
         } else {
             logger.error("Unknown error:", error)
         }
     }
-}
-
-startServer().then(() => {})
+})
 
