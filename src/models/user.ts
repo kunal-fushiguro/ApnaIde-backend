@@ -11,7 +11,7 @@ const userSchema = new Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, select: false },
-    containersList: [{ type: Schema.Types.ObjectId, ref: "containers" }]
+    containersList: [{ type: Schema.Types.ObjectId, ref: "Containers" }]
 })
 
 const Users = model("Users", userSchema)
