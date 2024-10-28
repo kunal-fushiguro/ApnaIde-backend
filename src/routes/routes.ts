@@ -2,7 +2,7 @@ import { Router } from "express"
 import { test } from "../controllers/test"
 import { checkAuth, login, logout, register, remove, update } from "../controllers/users"
 import { authMiddleware } from "../middleware/auth"
-import { deleteContainer, runContainers, stopContainer } from "../controllers/dockerode"
+import { deleteContainer, listContainers, runContainers, stopContainer } from "../controllers/dockerode"
 
 const router = Router()
 
@@ -17,9 +17,10 @@ router.put("/users", authMiddleware, update)
 router.delete("/users", authMiddleware, remove)
 
 // containers routes
-router.post("/containers", runContainers)
-router.patch("/containers", stopContainer)
-router.delete("/containers", deleteContainer)
+router.post("/containers", authMiddleware, runContainers)
+router.patch("/containers", authMiddleware, stopContainer)
+router.delete("/containers", authMiddleware, deleteContainer)
+router.get("/containers", authMiddleware, listContainers)
 
 export { router }
 
