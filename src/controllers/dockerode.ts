@@ -37,14 +37,14 @@ async function runContainers(req: Request, res: Response) {
 
 async function stopContainer(req: Request, res: Response) {
     try {
-        const { imageId } = req.body
-        if (!imageId) {
+        const { containerId } = req.body
+        if (!containerId) {
             const response = new ApiResponse(400, false, "imageId is required")
             res.status(400).json(response)
             return
         }
 
-        const container = await dockerode.getContainer(imageId)
+        const container = await dockerode.getContainer(containerId)
         await container.stop()
 
         const response = new ApiResponse(200, true, `${(await container.inspect()).Name} container stoped`)
@@ -56,5 +56,26 @@ async function stopContainer(req: Request, res: Response) {
     }
 }
 
-export { runContainers, stopContainer }
+async function deleteContainer(req: Request, res: Response) {
+    try {
+        const { containerId } = req.body
+        if (!containerId) {
+            const response = new ApiResponse(400, false, "imageId is required")
+            res.status(400).json(response)
+            return
+        }
+
+        const container = await dockerode.getContainer(containerId)
+        await container.remove()
+
+        const response = new ApiResponse(200, true, `container deleted`)
+        res.status(200).json(response)
+    } catch (error: any) {
+        logger.error("Error : ", error.message)
+        const response = new ApiResponse(500, false, error.message)
+        res.status(500).json(response)
+    }
+}
+
+export { runContainers, stopContainer, deleteContainer }
 
