@@ -2,6 +2,7 @@ import { Router } from "express"
 import { test } from "../controllers/test"
 import { checkAuth, login, logout, register, remove, update } from "../controllers/users"
 import { authMiddleware } from "../middleware/auth"
+import { runContainers, stopContainer } from "../controllers/dockerode"
 
 const router = Router()
 
@@ -14,6 +15,10 @@ router.get("/users/logout", logout)
 router.get("/users", authMiddleware, checkAuth)
 router.put("/users", authMiddleware, update)
 router.delete("/users", authMiddleware, remove)
+
+// containers routes
+router.post("/containers", runContainers)
+router.post("/containers/stop", stopContainer)
 
 export { router }
 
