@@ -4,6 +4,7 @@ import { router } from "./routes/routes"
 import { ApiResponse } from "./utils/apiResponse"
 import { dbConnect } from "./db/db"
 import cookieparser from "cookie-parser"
+import { httpServer } from "./proxy-server/server"
 
 const app: Express = express()
 const PORT: number = 7070
@@ -28,5 +29,9 @@ app.listen(PORT, async function () {
             logger.error("Unknown error:", error)
         }
     }
+})
+
+httpServer.listen(7071, function () {
+    logger.info("Proxy Server Started on PORT : 7071")
 })
 
