@@ -14,7 +14,7 @@ const containersSchema = new Schema({
     ip: { type: String, required: true },
     port: { type: Number, required: true },
     userId: { type: Schema.Types.ObjectId, ref: "Users" },
-    containerId: { type: Number, required: true },
+    containerId: { type: String, required: true },
     status: { type: Boolean, required: true }
 })
 

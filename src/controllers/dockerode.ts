@@ -30,8 +30,7 @@ async function runContainers(req: Request, res: Response) {
         const container = await dockerode.createContainer({
             Image: imageId,
             name: `${containerName}${Math.floor(Math.random() * 10000)}`,
-            Tty: false,
-            HostConfig: { AutoRemove: true }
+            Tty: false
         })
         await container.start()
         const data = await container.inspect()
@@ -77,7 +76,7 @@ async function stopContainer(req: Request, res: Response) {
         await container.stop()
         await Containers.findOneAndUpdate({ containerId: containerId }, { status: false })
 
-        const response = new ApiResponse(200, true, `${(await container.inspect()).Name} container stoped`)
+        const response = new ApiResponse(200, true, `container stoped`)
         res.status(200).json(response)
     } catch (error: any) {
         logger.error("Error : ", error.message)
@@ -88,9 +87,9 @@ async function stopContainer(req: Request, res: Response) {
 
 async function deleteContainer(req: Request, res: Response) {
     try {
-        const { containerId } = req.body
-        if (!containerId) {
-            const response = new ApiResponse(400, false, "imageId is required")
+        const { containerId, id } = req.body
+        if (!containerId || !id) {
+            const response = new ApiResponse(400, false, "containerId & id is required")
             res.status(400).json(response)
             return
         }
@@ -105,7 +104,7 @@ async function deleteContainer(req: Request, res: Response) {
         const container = await dockerode.getContainer(containerId)
         await container.remove()
         await Containers.findOneAndDelete({ containerId: containerId })
-        await Users.findByIdAndUpdate(isUserExisted._id, { $pull: { containersList: containerId } })
+        await Users.findByIdAndUpdate(isUserExisted._id, { $pull: { containersList: id } })
 
         const response = new ApiResponse(200, true, `container deleted`)
         res.status(200).json(response)
