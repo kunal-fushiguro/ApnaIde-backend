@@ -9,7 +9,7 @@ import { Users } from "../models/user"
 //     reactjs: "2111b97ddb94"
 // }
 
-const dockerode = new Docker()
+const dockerode = new Docker({ socketPath: "/var/run/docker.sock" })
 
 async function runContainers(req: Request, res: Response) {
     try {
