@@ -15,13 +15,13 @@ proxyServer.use(express.json())
 
 proxyServer.use(function (req: Request, res: Response) {
     try {
-        const { target } = req.body
+        const { target } = req.query
         if (!target) {
             const response = new ApiResponse(400, false, `Target IP is required.`)
             res.status(400).json(response)
         }
 
-        return proxy.web(req, res, { target: target, changeOrigin: true, ws: true })
+        return proxy.web(req, res, { target: String(target), changeOrigin: true, ws: true })
     } catch (error: any) {
         const response = new ApiResponse(500, false, `Error : ${error.message}`)
         res.status(500).json(response)
